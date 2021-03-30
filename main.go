@@ -1,24 +1,47 @@
 package main
 
 import (
+	"encoding/xml"
 	"flag"
 	"fmt"
 	"io"
 	"net/http"
 	"net/url"
+	"os"
 	"strings"
 
 	"github.com/niranjan-n/HTML-Parser/link"
 )
 
+const xmlns = "http://www.sitemaps.org/schemas/sitemap/0.9"
+
+type loc struct {
+	Value string `xml:"loc"`
+}
+
+type urlset struct {
+	Urls  []loc  `xml:"url"`
+	Xmlns string `xml:"xmlns,attr"`
+}
+
 func main() {
 	urlFlag := flag.String("url", "https://golang.org/", "The url that you want to build a sitemap for")
 	flag.Parse()
-	fmt.Println(*urlFlag)
 	hrefs := getBaseURL(*urlFlag)
-	for _, href := range hrefs {
-		fmt.Println(href)
+
+	toXML := urlset{
+		Xmlns: xmlns,
 	}
+	for _, href := range hrefs {
+		toXML.Urls = append(toXML.Urls, loc{href})
+	}
+	fmt.Print(xml.Header)
+	enc := xml.NewEncoder(os.Stdout)
+	enc.Indent("", "  ")
+	if err := enc.Encode(toXML); err != nil {
+		panic(err)
+	}
+	fmt.Println()
 
 }
 func getBaseURL(urlStr string) []string {
