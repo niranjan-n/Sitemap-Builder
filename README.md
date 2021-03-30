@@ -7,7 +7,7 @@ One way these can be built is by first visiting the root page of the website and
 
 In this project the goal is to build a sitemap builder like the one described above. 
 
-Once you have determined all of the pages of a site, sitemap builder should then output the data in the following XML format:
+Once all of the pages of a site  is determined, sitemap builder should then output the data in the following XML format:
 
 ```
 <?xml version="1.0" encoding="UTF-8"?>
